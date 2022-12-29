@@ -52,22 +52,32 @@ impl Board {
         };
     }
 
-    pub fn place(&mut self, col: usize) {
-        let row = self.get_num_col_bricks(col);
-        if row >= 6 || col >= 7{
-            return;
+    fn get_place_point(&mut self, col: usize) -> Option<(usize, usize)> {
+        if col >= 7 {
+            return None;
         }
+        let row = self.get_num_col_bricks(col);
+        if row >= 6 {
+            return None;
+        }
+        return Some((col, row));
+    }
 
+    fn get_tile_update(&mut self) -> Tile{
         let player = self.get_player();
         let brick = Brick { player: player };
         let tile = Tile::Brick(brick);
-        self.tiles[col][row] = tile;
+        tile
     }
 
+    pub fn place(&mut self, col: usize) {
+        if let Some((col, row)) = self.get_place_point(col) {
+            self.tiles[col][row] = self.get_tile_update();
+        }
+    }
 }
 
 impl fmt::Display for Board {
-
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut board_string = "".to_owned();
         for row in 0..6 {
