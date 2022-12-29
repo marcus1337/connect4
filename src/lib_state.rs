@@ -2,7 +2,7 @@ extern crate lazy_static;
 
 use super::board::Board;
 
-pub mod library_singleton {
+pub mod singleton {
     use lazy_static::lazy_static;
     use std::fmt;
     use std::sync::{Arc, Mutex};

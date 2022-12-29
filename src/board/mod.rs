@@ -17,6 +17,11 @@ impl Board {
     pub fn reset(&mut self){
         *self = Board::new();
     }
+
+    pub fn place_brick(file: i32){
+        
+    }
+
 }
 
 
