@@ -24,9 +24,8 @@ impl Board {
     fn get_num_col_bricks(&mut self, col: usize) -> usize {
         let mut num_bricks = 0;
         for row in 0..6 {
-            match self.tiles[col][row] {
-                Tile::Brick(brick) => num_bricks += 1,
-                _ => (),
+            if let Tile::Brick(_) = self.tiles[col][row] {
+                num_bricks += 1;
             }
         }
         num_bricks
@@ -38,7 +37,7 @@ impl Board {
             .iter()
             .flatten()
             .filter(|x| match x {
-                Tile::Brick(brick) => true,
+                Tile::Brick(_) => true,
                 _ => false,
             })
             .count();
@@ -64,22 +63,16 @@ impl Board {
         let tile = Tile::Brick(brick);
         self.tiles[col][row] = tile;
     }
+
 }
 
 impl fmt::Display for Board {
+
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut board_string = "".to_owned();
         for row in 0..6 {
             for col in 0..7 {
-                match self.tiles[col][5 - row] {
-                    Tile::Brick(Brick {
-                        player: Player::Player1,
-                    }) => board_string += "[X]",
-                    Tile::Brick(Brick {
-                        player: Player::Player2,
-                    }) => board_string += "[O]",
-                    _ => board_string += "[ ]",
-                }
+                board_string += self.tiles[col][5 - row].to_string().as_str();
             }
             board_string += "\n";
         }

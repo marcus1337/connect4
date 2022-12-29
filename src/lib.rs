@@ -2,8 +2,6 @@ extern crate libc;
 
 mod board;
 mod lib_state;
-
-use lazy_static::__Deref;
 use lib_state::singleton::State;
 
 #[no_mangle]
