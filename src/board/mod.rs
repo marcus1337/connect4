@@ -1,11 +1,12 @@
 
-pub mod piece;
+pub mod tile;
 
-use piece::Piece;
-
-#[derive(Debug)]
 pub struct Board{
-    pub rows: i32,
-    pub cols: i32,
+    tiles: tile::Tile,
 }
 
+impl Board {
+    pub fn new() -> Self {
+        Self { tiles: tile::Tile::Empty }
+    }
+}
