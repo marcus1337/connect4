@@ -1,12 +1,14 @@
-
 pub mod tile;
+use tile::Tile;
 
-pub struct Board{
-    tiles: tile::Tile,
+pub struct Board {
+    tiles: [[Tile; 7]; 6],
 }
 
 impl Board {
     pub fn new() -> Self {
-        Self { tiles: tile::Tile::Empty }
+        Self {
+            tiles: [[Tile::Empty; 7]; 6],
+        }
     }
 }

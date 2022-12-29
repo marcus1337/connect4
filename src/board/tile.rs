@@ -10,6 +10,7 @@ pub struct Brick{
     pub player : Player,
 }
 
+#[derive(Copy, Clone)]
 pub enum Tile{
     Empty,
     Brick,
