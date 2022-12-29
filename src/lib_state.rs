@@ -1,7 +1,6 @@
 extern crate lazy_static;
 
 use super::board::Board;
-use super::board::GameType;
 
 pub mod library_singleton {
     use lazy_static::lazy_static;
@@ -26,7 +25,7 @@ pub mod library_singleton {
     impl State {
         fn new() -> State {
             State {
-                board: Board::new(GameType::ConnectFour),
+                board: Board::new(),
             }
         }
 
@@ -35,3 +34,4 @@ pub mod library_singleton {
         }
     }
 }
+
