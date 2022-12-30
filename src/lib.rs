@@ -1,13 +1,13 @@
 
 use self::board::Board;
 extern crate libc;
-mod board;
+pub mod board;
 
 //cbindgen --output target/release/connect4.h
 
 #[repr(C)]
-struct Connect4 {
-    board: Board,
+pub struct Connect4 {
+    pub board: Board,
 }
 
 impl Connect4 {
@@ -29,13 +29,11 @@ impl Connect4 {
         println!("{}", self.board);
     }
 
-    #[no_mangle]
-    pub extern "C" fn get_ai_move(&mut self) -> i32 {
-        0
-    }
-
-    pub extern "C" fn apply_ai_move(&mut self) {
-
-    }
+    //#[no_mangle]
+    //pub extern "C" fn get_ai_move(&mut self) -> i32 {
+    //    0
+    //}
+    //pub extern "C" fn apply_ai_move(&mut self) {
+    //}
     
 }

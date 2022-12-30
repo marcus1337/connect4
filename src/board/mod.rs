@@ -5,7 +5,8 @@ use tile::Tile;
 use self::tile::Brick;
 
 #[repr(C)]
-pub enum Result {
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum GameResult {
     OneWin,
     TwoWin,
     Draw,
@@ -124,19 +125,19 @@ impl Board {
     }
 
     #[no_mangle]
-    pub extern "C" fn get_result(&mut self) -> Result {
+    pub extern "C" fn get_result(&mut self) -> GameResult {
         if self.has_line_of_4(){
             let win_line = self.get_line_of_4();
             if win_line[0] == Tile::Brick(Brick::One){
-                return Result::OneWin;
+                return GameResult::OneWin;
             }else{
-                return Result::TwoWin;
+                return GameResult::TwoWin;
             }
         }
         if self.can_place_any() {
-            return Result::OnGoing;
+            return GameResult::OnGoing;
         }
-        Result::Draw
+        GameResult::Draw
     }
 
     fn get_num_col_bricks(&mut self, col: usize) -> usize {
