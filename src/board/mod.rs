@@ -3,7 +3,6 @@ use std::fmt;
 use tile::Tile;
 
 use self::tile::Brick;
-use self::tile::Player;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
@@ -45,38 +44,50 @@ impl Board {
         count_bricks as i32
     }
 
-    pub fn get_player(&mut self) -> Player {
+    pub fn get_next_brick(&mut self) -> Brick {
         if self.get_num_bricks() % 2 == 0 {
-            return Player::Player1;
+            return Brick::ONE;
         } else {
-            return Player::Player2;
+            return Brick::TWO;
         };
     }
 
-    fn get_place_point(&mut self, col: usize) -> Option<(usize, usize)> {
-        if col >= 7 {
-            return None;
-        }
-        let row = self.get_num_col_bricks(col);
-        if row >= 6 {
-            return None;
-        }
-        return Some((col, row));
-    }
-
-    fn get_tile_update(&mut self) -> Tile{
-        let player = self.get_player();
-        let brick = Brick { player: player };
+    fn get_tile_update(&mut self) -> Tile {
+        let brick = self.get_next_brick();
         let tile = Tile::Brick(brick);
         tile
     }
 
-    pub fn place(&mut self, col: usize) {
-        if let Some((col, row)) = self.get_place_point(col) {
-            self.tiles[col][row] = self.get_tile_update();
+    #[no_mangle]
+    pub extern "C" fn has_brick(&mut self, col: i32, row: i32) -> bool {
+        let tile = self.tiles[col as usize][row as usize];
+        if let Tile::Brick(_) = tile {
+            return true;
         }
+        false
     }
-    
+
+    #[no_mangle]
+    pub extern "C" fn is_brick(&mut self, brick: Brick, col: i32, row: i32) -> bool {
+        let tile = self.tiles[col as usize][row as usize];
+        if let Tile::Brick(tile_brick) = tile {
+            return tile_brick == brick;
+        }
+        false
+    }
+
+    #[no_mangle]
+    pub extern "C" fn canPlace(&mut self, col: i32) -> bool {
+        let row = self.get_num_col_bricks(col as usize);
+        row < 6
+    }
+
+    #[no_mangle]
+    pub extern "C" fn place(&mut self, col: i32) {
+        let row = self.get_num_col_bricks(col as usize);
+        self.tiles[col as usize][row] = self.get_tile_update();
+    }
+
 }
 
 impl fmt::Display for Board {

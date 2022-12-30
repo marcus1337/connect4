@@ -28,7 +28,6 @@ after_includes = ""
 
 
 
-
 ############################ Code Style Options ################################
 
 braces = "SameLine"

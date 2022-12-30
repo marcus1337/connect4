@@ -1,10 +1,9 @@
+
 use self::board::Board;
-
 extern crate libc;
-
 mod board;
 
-//cbindgen --config cbindgen.toml --crate connect4 --output target/release/connect4.h
+//cbindgen --output target/release/connect4.h
 
 #[repr(C)]
 struct Connect4 {
@@ -21,13 +20,13 @@ impl Connect4 {
     }
 
     #[no_mangle]
-    pub extern "C" fn print(&mut self) {
-        println!("{}", self.board);
+    pub extern "C" fn reset(&mut self) {
+        self.board.reset();
     }
 
     #[no_mangle]
-    pub extern "C" fn place(&mut self, col: i32) {
-        self.board.place(col as usize);
+    pub extern "C" fn print(&mut self) {
+        println!("{}", self.board);
     }
     
 }

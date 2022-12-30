@@ -1,15 +1,8 @@
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub enum Player{
-    Player1,
-    Player2,
-}
-
-#[repr(C)]
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Brick{
-    pub player : Player,
+pub enum Brick{
+    ONE, TWO
 }
 
 #[repr(C)]
@@ -23,8 +16,8 @@ impl Tile {
     pub fn to_string(&self) -> String {
         let str = match self {
             Tile::Empty => "[ ]",
-            Tile::Brick(Brick{player: Player::Player1}) => "[X]",
-            Tile::Brick(Brick{player: Player::Player2}) => "[O]"
+            Tile::Brick(Brick::ONE) => "[X]",
+            Tile::Brick(Brick::TWO) => "[O]"
         };
         String::from(str)
     }
