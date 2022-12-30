@@ -14,19 +14,19 @@ struct Connect4 {
 impl Connect4 {
 
     #[no_mangle]
-    pub extern "C" fn connect4_make() -> Self {
+    pub extern "C" fn make() -> Self {
         Self {
             board: Board::new()
         }
     }
 
     #[no_mangle]
-    pub extern "C" fn connect4_print(&mut self) {
+    pub extern "C" fn print(&mut self) {
         println!("{}", self.board);
     }
 
     #[no_mangle]
-    pub extern "C" fn connect4_place(&mut self, col: i32) {
+    pub extern "C" fn place(&mut self, col: i32) {
         self.board.place(col as usize);
     }
     
