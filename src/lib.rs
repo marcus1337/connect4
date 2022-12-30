@@ -15,7 +15,7 @@ impl Connect4 {
     #[no_mangle]
     pub extern "C" fn make() -> Self {
         Self {
-            board: Board::new()
+            board: Board::new(),
         }
     }
 
@@ -27,6 +27,15 @@ impl Connect4 {
     #[no_mangle]
     pub extern "C" fn print(&mut self) {
         println!("{}", self.board);
+    }
+
+    #[no_mangle]
+    pub extern "C" fn get_ai_move(&mut self) -> i32 {
+        0
+    }
+
+    pub extern "C" fn apply_ai_move(&mut self) {
+
     }
     
 }

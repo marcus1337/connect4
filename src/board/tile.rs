@@ -2,7 +2,7 @@
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Brick{
-    ONE, TWO
+    One, Two
 }
 
 #[repr(C)]
@@ -16,8 +16,8 @@ impl Tile {
     pub fn to_string(&self) -> String {
         let str = match self {
             Tile::Empty => "[ ]",
-            Tile::Brick(Brick::ONE) => "[X]",
-            Tile::Brick(Brick::TWO) => "[O]"
+            Tile::Brick(Brick::One) => "[X]",
+            Tile::Brick(Brick::Two) => "[O]"
         };
         String::from(str)
     }

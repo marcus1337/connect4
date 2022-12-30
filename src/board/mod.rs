@@ -5,6 +5,14 @@ use tile::Tile;
 use self::tile::Brick;
 
 #[repr(C)]
+pub enum Result {
+    OneWin,
+    TwoWin,
+    Draw,
+    OnGoing,
+}
+
+#[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct Board {
     pub tiles: [[Tile; 6]; 7],
@@ -19,6 +27,116 @@ impl Board {
 
     pub fn reset(&mut self) {
         *self = Board::new();
+    }
+
+    fn can_place_any(&mut self) -> bool {
+        for col in 0..7 as usize {
+            let num_col_bricks = self.get_num_col_bricks(col);
+            if num_col_bricks < 6 {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn is_line_of_4(line: [Tile; 4]) -> bool {
+        match line[0] {
+            Tile::Brick(_) => line[1..].iter().all(|tile| *tile == line[0]),
+            _ => false,
+        }
+    }
+
+    fn get_horizontal_lines(&self) -> Vec<[Tile; 4]> {
+        let mut lines = Vec::<[Tile; 4]>::new();
+        for col in 0..4 {
+            for row in 0..6 {
+                lines.push([
+                    self.tiles[col][row],
+                    self.tiles[col + 1][row],
+                    self.tiles[col + 2][row],
+                    self.tiles[col + 3][row],
+                ]);
+            }
+        }
+        lines
+    }
+
+    fn get_vertical_lines(&self) -> Vec<[Tile; 4]> {
+        let mut lines = Vec::<[Tile; 4]>::new();
+        for col in 0..7 {
+            for row in 0..3 {
+                lines.push([
+                    self.tiles[col][row],
+                    self.tiles[col][row + 1],
+                    self.tiles[col][row + 2],
+                    self.tiles[col][row + 3],
+                ]);
+            }
+        }
+        lines
+    }
+
+    fn get_diagonal_lines(&self) -> Vec<[Tile; 4]> {
+        let mut lines = Vec::<[Tile; 4]>::new();
+        for col in 0..4 {
+            for row in 0..3 {
+                lines.push([
+                    self.tiles[col][row],
+                    self.tiles[col+1][row + 1],
+                    self.tiles[col+2][row + 2],
+                    self.tiles[col+3][row + 3],
+                ]);
+                lines.push([
+                    self.tiles[col][5-row],
+                    self.tiles[col+1][5-row - 1],
+                    self.tiles[col+2][5-row - 2],
+                    self.tiles[col+3][5-row - 3],
+                ]);
+            }
+        }
+        lines
+    }
+
+    fn get_lines(&self) -> Vec<[Tile; 4]> {
+        let mut lines = Vec::<[Tile; 4]>::new();
+        lines.extend(self.get_horizontal_lines());
+        lines.extend(self.get_vertical_lines());
+        lines.extend(self.get_diagonal_lines());
+        lines
+    }
+
+    fn get_line_of_4(&self) -> [Tile; 4] {
+        for line in self.get_lines() {
+            if Board::is_line_of_4(line) {
+                return line;
+            }
+        }
+        return [Tile::Empty; 4]
+    }
+
+    fn has_line_of_4(&self) -> bool {
+        for line in self.get_lines() {
+            if Board::is_line_of_4(line) {
+                return true;
+            }
+        }
+        false
+    }
+
+    #[no_mangle]
+    pub extern "C" fn get_result(&mut self) -> Result {
+        if self.has_line_of_4(){
+            let win_line = self.get_line_of_4();
+            if win_line[0] == Tile::Brick(Brick::One){
+                return Result::OneWin;
+            }else{
+                return Result::TwoWin;
+            }
+        }
+        if self.can_place_any() {
+            return Result::OnGoing;
+        }
+        Result::Draw
     }
 
     fn get_num_col_bricks(&mut self, col: usize) -> usize {
@@ -46,9 +164,9 @@ impl Board {
 
     pub fn get_next_brick(&mut self) -> Brick {
         if self.get_num_bricks() % 2 == 0 {
-            return Brick::ONE;
+            return Brick::One;
         } else {
-            return Brick::TWO;
+            return Brick::Two;
         };
     }
 
@@ -77,7 +195,7 @@ impl Board {
     }
 
     #[no_mangle]
-    pub extern "C" fn canPlace(&mut self, col: i32) -> bool {
+    pub extern "C" fn can_place(&mut self, col: i32) -> bool {
         let row = self.get_num_col_bricks(col as usize);
         row < 6
     }
@@ -87,7 +205,6 @@ impl Board {
         let row = self.get_num_col_bricks(col as usize);
         self.tiles[col as usize][row] = self.get_tile_update();
     }
-
 }
 
 impl fmt::Display for Board {
