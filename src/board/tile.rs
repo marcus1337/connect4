@@ -23,4 +23,9 @@ impl Tile {
     }
 }
 
+#[repr(C)]
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub struct Point(pub i32,pub i32);
+
+
 

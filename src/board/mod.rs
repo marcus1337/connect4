@@ -1,6 +1,10 @@
 pub mod tile;
+pub mod line;
+
 use std::fmt;
+use tile::Point;
 use tile::Tile;
+use line::Line;
 
 use self::tile::Brick;
 
@@ -40,84 +44,45 @@ impl Board {
         false
     }
 
-    fn is_line_of_4(line: [Tile; 4]) -> bool {
-        match line[0] {
-            Tile::Brick(_) => line[1..].iter().all(|tile| *tile == line[0]),
-            _ => false,
+    fn get_tile(&self, point: Point) -> Tile {
+        let col = point.0 as usize;
+        let row = point.1 as usize;
+        self.tiles[col][row]
+    }
+
+    fn get_line(&self, points: [Point; 4]) -> Line{
+        let tile1 = self.get_tile(points[0]);
+        let tile2 = self.get_tile(points[1]);
+        let tile3 = self.get_tile(points[2]);
+        let tile4 = self.get_tile(points[3]);
+        Line{
+            tiles: [tile1, tile2, tile3, tile4],
+            points: points
         }
     }
 
-    fn get_horizontal_lines(&self) -> Vec<[Tile; 4]> {
-        let mut lines = Vec::<[Tile; 4]>::new();
-        for col in 0..4 {
-            for row in 0..6 {
-                lines.push([
-                    self.tiles[col][row],
-                    self.tiles[col + 1][row],
-                    self.tiles[col + 2][row],
-                    self.tiles[col + 3][row],
-                ]);
-            }
-        }
-        lines
-    }
 
-    fn get_vertical_lines(&self) -> Vec<[Tile; 4]> {
-        let mut lines = Vec::<[Tile; 4]>::new();
-        for col in 0..7 {
-            for row in 0..3 {
-                lines.push([
-                    self.tiles[col][row],
-                    self.tiles[col][row + 1],
-                    self.tiles[col][row + 2],
-                    self.tiles[col][row + 3],
-                ]);
-            }
+    fn get_lines(&self) -> Vec<Line> {
+        let mut lines = Vec::<Line>::new();
+        for line_points in Line::get_line_points() {
+            lines.push(self.get_line(line_points));
         }
         lines
     }
 
-    fn get_diagonal_lines(&self) -> Vec<[Tile; 4]> {
-        let mut lines = Vec::<[Tile; 4]>::new();
-        for col in 0..4 {
-            for row in 0..3 {
-                lines.push([
-                    self.tiles[col][row],
-                    self.tiles[col+1][row + 1],
-                    self.tiles[col+2][row + 2],
-                    self.tiles[col+3][row + 3],
-                ]);
-                lines.push([
-                    self.tiles[col][5-row],
-                    self.tiles[col+1][5-row - 1],
-                    self.tiles[col+2][5-row - 2],
-                    self.tiles[col+3][5-row - 3],
-                ]);
-            }
-        }
-        lines
-    }
-
-    fn get_lines(&self) -> Vec<[Tile; 4]> {
-        let mut lines = Vec::<[Tile; 4]>::new();
-        lines.extend(self.get_horizontal_lines());
-        lines.extend(self.get_vertical_lines());
-        lines.extend(self.get_diagonal_lines());
-        lines
-    }
-
-    fn get_line_of_4(&self) -> [Tile; 4] {
+    #[no_mangle]
+    pub extern "C" fn get_win_line(&self) -> Line {
         for line in self.get_lines() {
-            if Board::is_line_of_4(line) {
+            if line.is_win() {
                 return line;
             }
         }
-        return [Tile::Empty; 4]
+        return Line::make_default();
     }
 
     fn has_line_of_4(&self) -> bool {
         for line in self.get_lines() {
-            if Board::is_line_of_4(line) {
+            if line.is_win() {
                 return true;
             }
         }
@@ -126,11 +91,11 @@ impl Board {
 
     #[no_mangle]
     pub extern "C" fn get_result(&mut self) -> GameResult {
-        if self.has_line_of_4(){
-            let win_line = self.get_line_of_4();
-            if win_line[0] == Tile::Brick(Brick::One){
+        if self.has_line_of_4() {
+            let win_line = self.get_win_line();
+            if win_line.get_brick_type() == Brick::One {
                 return GameResult::OneWin;
-            }else{
+            } else {
                 return GameResult::TwoWin;
             }
         }
