@@ -76,7 +76,7 @@ impl Line {
 
     pub fn get_diagonal_line_points() -> Vec<[Point; 4]> {
         let mut lines = Vec::<[Point; 4]>::new();
-        for col in 0..7 {
+        for col in 0..4 {
             for row in 0..3 {
                 lines.push([
                     Point(col, row),

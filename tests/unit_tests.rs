@@ -7,7 +7,7 @@ use lib::Connect4;
 mod tests {    
     use super::Connect4;
     use super::lib::board::GameResult;
-    use super::lib::board::Board;
+    use super::lib::board::tile::Point;
 
     #[test]
     fn can_win_vertical() {
@@ -21,6 +21,20 @@ mod tests {
         connect4.board.place(0);
         let result = connect4.board.get_result();
         assert_eq!(result, GameResult::OneWin);
+    }
+
+    #[test]
+    fn can_get_win_line() {
+        let mut connect4 = Connect4::make();
+        connect4.board.place(0);
+        connect4.board.place(1);
+        connect4.board.place(0);
+        connect4.board.place(1);
+        connect4.board.place(0);
+        connect4.board.place(1);
+        connect4.board.place(0);
+        let line = connect4.board.get_win_line();
+        assert_eq!(line.points, [Point(0,0), Point(0,1), Point(0,2), Point(0,3)]);
     }
 
     #[test]
