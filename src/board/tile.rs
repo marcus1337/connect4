@@ -1,15 +1,18 @@
 
+#[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Player{
     Player1,
     Player2,
 }
 
+#[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Brick{
     pub player : Player,
 }
 
+#[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Tile{
     Empty,

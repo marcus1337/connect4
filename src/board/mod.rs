@@ -5,7 +5,8 @@ use tile::Tile;
 use self::tile::Brick;
 use self::tile::Player;
 
-#[derive(Debug)]
+#[repr(C)]
+#[derive(Copy, Clone, Debug)]
 pub struct Board {
     pub tiles: [[Tile; 6]; 7],
 }
@@ -75,6 +76,7 @@ impl Board {
             self.tiles[col][row] = self.get_tile_update();
         }
     }
+    
 }
 
 impl fmt::Display for Board {

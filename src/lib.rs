@@ -1,20 +1,33 @@
+use self::board::Board;
+
 extern crate libc;
 
 mod board;
-mod lib_state;
-use lib_state::singleton::State;
 
-#[no_mangle]
-pub fn connect4_print() {
-    let state = State::instance();
-    let state_data = state.lock().unwrap();
-    println!("{}", state_data.board);
+//cbindgen --config cbindgen.toml --crate connect4 --output target/release/connect4.h
+
+#[repr(C)]
+struct Connect4 {
+    board: Board,
 }
 
-#[no_mangle]
-pub fn connect4_place(col: i32){
-    let state = State::instance();
-    let mut state_data = state.lock().unwrap();
-    state_data.board.place(col as usize);
-}
+impl Connect4 {
 
+    #[no_mangle]
+    pub extern "C" fn connect4_make() -> Self {
+        Self {
+            board: Board::new()
+        }
+    }
+
+    #[no_mangle]
+    pub extern "C" fn connect4_print(&mut self) {
+        println!("{}", self.board);
+    }
+
+    #[no_mangle]
+    pub extern "C" fn connect4_place(&mut self, col: i32) {
+        self.board.place(col as usize);
+    }
+    
+}
