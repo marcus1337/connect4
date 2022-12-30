@@ -2,6 +2,7 @@
 use self::board::Board;
 extern crate libc;
 pub mod board;
+mod ai;
 
 //cbindgen --output target/release/connect4.h
 

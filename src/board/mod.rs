@@ -128,7 +128,8 @@ impl Board {
         count_bricks as i32
     }
 
-    pub fn get_next_brick(&mut self) -> Brick {
+    #[no_mangle]
+    pub extern "C" fn get_next_brick(&mut self) -> Brick {
         if self.get_num_bricks() % 2 == 0 {
             return Brick::One;
         } else {
