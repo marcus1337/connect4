@@ -167,7 +167,7 @@ impl Board {
     }
 
     #[no_mangle]
-    pub extern "C" fn can_place(&mut self, col: i32) -> bool {
+    pub extern "C" fn can_place(&self, col: i32) -> bool {
         let row = self.get_num_col_bricks(col as usize);
         row < 6
     }
