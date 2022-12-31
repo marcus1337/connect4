@@ -16,5 +16,5 @@ fn can_evaluate() {
     connect4.board.place(1);
     let mut scorer = Evaluator::new(connect4.board);
     let score = scorer.get_score();
-    assert_eq!(0, score);
+    assert_eq!(1, score);
 }
