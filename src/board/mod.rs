@@ -34,7 +34,7 @@ impl Board {
         *self = Board::new();
     }
 
-    fn can_place_any(&mut self) -> bool {
+    fn can_place_any(&self) -> bool {
         for col in 0..7 as usize {
             let num_col_bricks = self.get_num_col_bricks(col);
             if num_col_bricks < 6 {
@@ -44,9 +44,9 @@ impl Board {
         false
     }
 
-    fn get_tile(&self, point: Point) -> Tile {
-        let col = point.0 as usize;
-        let row = point.1 as usize;
+    pub fn get_tile(&self, point: Point) -> Tile {
+        let col = point.col as usize;
+        let row = point.row as usize;
         self.tiles[col][row]
     }
 
@@ -62,7 +62,7 @@ impl Board {
     }
 
 
-    fn get_lines(&self) -> Vec<Line> {
+    pub fn get_lines(&self) -> Vec<Line> {
         let mut lines = Vec::<Line>::new();
         for line_points in Line::get_line_points() {
             lines.push(self.get_line(line_points));
@@ -89,8 +89,13 @@ impl Board {
         false
     }
 
+    pub fn is_done(&self) -> bool {
+        let game_result = self.get_result();
+        game_result == GameResult::OneWin || game_result == GameResult::TwoWin || game_result == GameResult::Draw
+    }
+
     #[no_mangle]
-    pub extern "C" fn get_result(&mut self) -> GameResult {
+    pub extern "C" fn get_result(&self) -> GameResult {
         if self.has_line_of_4() {
             let win_line = self.get_win_line();
             if win_line.get_brick_type() == Brick::One {
@@ -105,7 +110,7 @@ impl Board {
         GameResult::Draw
     }
 
-    fn get_num_col_bricks(&mut self, col: usize) -> usize {
+    fn get_num_col_bricks(&self, col: usize) -> usize {
         let mut num_bricks = 0;
         for row in 0..6 {
             if let Tile::Brick(_) = self.tiles[col][row] {
@@ -115,7 +120,7 @@ impl Board {
         num_bricks
     }
 
-    fn get_num_bricks(&mut self) -> i32 {
+    fn get_num_bricks(&self) -> i32 {
         let count_bricks = self
             .tiles
             .iter()
@@ -129,7 +134,7 @@ impl Board {
     }
 
     #[no_mangle]
-    pub extern "C" fn get_next_brick(&mut self) -> Brick {
+    pub extern "C" fn get_next_brick(&self) -> Brick {
         if self.get_num_bricks() % 2 == 0 {
             return Brick::One;
         } else {

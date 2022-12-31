@@ -15,9 +15,25 @@ pub struct Line {
 
 impl Line {
 
+    pub fn get_next_left_point(&self) -> Point {
+        self.points[0] - (self.points[1] - self.points[0])
+    }
+
+    pub fn get_next_right_point(&self) -> Point {
+        self.points[3] + (self.points[3] - self.points[2])
+    }
+
+    pub fn has_next_right_tile(&self) -> bool {
+        self.get_next_right_point().in_bounds()
+    }
+
+    pub fn has_next_left_tile(&self) -> bool {
+        self.get_next_left_point().in_bounds()
+    }
+
     pub fn make_default() -> Self{
         Self {
-            points: [Point(0,0), Point(0,0), Point(0,0), Point(0,0)],
+            points: [Point::new(0,0), Point::new(0,0), Point::new(0,0), Point::new(0,0)],
             tiles: [Tile::Empty, Tile::Empty, Tile::Empty, Tile::Empty]
         }
     }
@@ -49,10 +65,10 @@ impl Line {
         for col in 0..4 {
             for row in 0..6 {
                 lines.push([
-                    Point(col, row),
-                    Point(col + 1, row),
-                    Point(col + 2, row),
-                    Point(col + 3, row),
+                    Point::new(col, row),
+                    Point::new(col + 1, row),
+                    Point::new(col + 2, row),
+                    Point::new(col + 3, row),
                 ]);
             }
         }
@@ -64,10 +80,10 @@ impl Line {
         for col in 0..7 {
             for row in 0..3 {
                 lines.push([
-                    Point(col, row),
-                    Point(col, row + 1),
-                    Point(col, row + 2),
-                    Point(col, row + 3),
+                    Point::new(col, row),
+                    Point::new(col, row + 1),
+                    Point::new(col, row + 2),
+                    Point::new(col, row + 3),
                 ]);
             }
         }
@@ -79,16 +95,16 @@ impl Line {
         for col in 0..4 {
             for row in 0..3 {
                 lines.push([
-                    Point(col, row),
-                    Point(col + 1, row + 1),
-                    Point(col + 2, row + 2),
-                    Point(col + 3, row + 3),
+                    Point::new(col, row),
+                    Point::new(col + 1, row + 1),
+                    Point::new(col + 2, row + 2),
+                    Point::new(col + 3, row + 3),
                 ]);
                 lines.push([
-                    Point(col, 5 -row),
-                    Point(col + 1, 5 - row - 1),
-                    Point(col + 2, 5 - row - 2),
-                    Point(col + 3, 5 - row - 3),
+                    Point::new(col, 5 -row),
+                    Point::new(col + 1, 5 - row - 1),
+                    Point::new(col + 2, 5 - row - 2),
+                    Point::new(col + 3, 5 - row - 3),
                 ]);
             }
         }
