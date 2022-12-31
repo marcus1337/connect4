@@ -109,6 +109,7 @@ impl Evaluator {
         self.flip_evaluation_bricks();
         let score_reduction = self.get_player_score();
         self.flip_evaluation_bricks();
-        score - score_reduction
+        let turn_advantage = 1;
+        score - score_reduction + turn_advantage
     }
 }
