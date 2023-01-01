@@ -12,12 +12,11 @@ pub struct Evaluator {
 }
 
 impl Evaluator {
-    pub fn new(board: Board) -> Self {
-        let next_brick = board.get_next_brick();
+    pub fn new(board: Board, player_brick: Brick) -> Self {
         Self {
             board: board,
-            player_tile: Tile::Brick(next_brick),
-            player_brick: next_brick,
+            player_tile: Tile::Brick(player_brick),
+            player_brick: player_brick,
             lines: board.get_lines(),
         }
     }
@@ -65,7 +64,7 @@ impl Evaluator {
             .count() as i32
     }
 
-    fn count_lines_2_open_ended(&self) -> i32 {
+    /*fn count_lines_2_open_ended(&self) -> i32 {
         let line_2 = [self.player_tile; 2];
         let empty_line_2 = [Tile::Empty; 2];
         let mut counter = 0;
@@ -81,13 +80,14 @@ impl Evaluator {
             }
         }
         counter
-    }
+    }*/
 
     fn get_game_end_score(&self) -> i32 {
         let game_result = self.board.get_result();
         if game_result == GameResult::Draw {
             return 0;
-        } else if game_result == GameResult::OneWin && self.player_brick == Brick::One {
+        } else if (game_result == GameResult::OneWin && self.player_brick == Brick::One) || 
+                (game_result == GameResult::TwoWin && self.player_brick == Brick::Two) {
             return 100;
         } else {
             return -100;
@@ -97,8 +97,8 @@ impl Evaluator {
     fn get_player_score(&self) -> i32 {
         let num_lines_3_open_ended = self.count_lines_3_open_ended();
         let num_lines_3_single_ended = self.count_lines_3_single_ended();
-        let num_lines_2_open_ended = self.count_lines_2_open_ended();
-        num_lines_3_open_ended * 10 + num_lines_3_single_ended * 5 + num_lines_2_open_ended
+        //let num_lines_2_open_ended = self.count_lines_2_open_ended();
+        num_lines_3_open_ended * 2 + num_lines_3_single_ended
     }
 
     pub fn get_score(&mut self) -> i32 {
@@ -109,7 +109,6 @@ impl Evaluator {
         self.flip_evaluation_bricks();
         let score_reduction = self.get_player_score();
         self.flip_evaluation_bricks();
-        let turn_advantage = 1;
-        score - score_reduction + turn_advantage
+        score - score_reduction
     }
 }
