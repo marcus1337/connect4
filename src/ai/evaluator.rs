@@ -64,23 +64,16 @@ impl Evaluator {
             .count() as i32
     }
 
-    /*fn count_lines_2_open_ended(&self) -> i32 {
+    fn count_lines_2_open_ended(&self) -> i32 {
         let line_2 = [self.player_tile; 2];
-        let empty_line_2 = [Tile::Empty; 2];
         let mut counter = 0;
         for line in self.lines.iter() {
-            if line.tiles[0..2] == line_2 && line.tiles[2..4] == empty_line_2 {
-                counter += 1;
-            }
-            if line.tiles[2..4] == line_2 && line.tiles[0..2] == empty_line_2 {
-                counter += 1;
-            }
             if line.tiles[1..3] == line_2 && line.tiles[0] == Tile::Empty && line.tiles[3] == Tile::Empty {
                 counter += 1;
             }
         }
         counter
-    }*/
+    }
 
     fn get_game_end_score(&self) -> i32 {
         let game_result = self.board.get_result();
@@ -97,8 +90,8 @@ impl Evaluator {
     fn get_player_score(&self) -> i32 {
         let num_lines_3_open_ended = self.count_lines_3_open_ended();
         let num_lines_3_single_ended = self.count_lines_3_single_ended();
-        //let num_lines_2_open_ended = self.count_lines_2_open_ended();
-        num_lines_3_open_ended * 2 + num_lines_3_single_ended
+        let num_lines_2_open_ended = self.count_lines_2_open_ended();
+        num_lines_3_open_ended * 5 + num_lines_3_single_ended * 4 + num_lines_2_open_ended
     }
 
     pub fn get_score(&mut self) -> i32 {
