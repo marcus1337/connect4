@@ -30,11 +30,16 @@ impl Connect4 {
         println!("{}", self.board);
     }
 
-    //#[no_mangle]
-    //pub extern "C" fn get_ai_move(&mut self) -> i32 {
-    //    0
-    //}
-    //pub extern "C" fn apply_ai_move(&mut self) {
-    //}
+    #[no_mangle]
+    pub extern "C" fn get_ai_move(&mut self) -> i32 {
+        ai::get_column_placement(self.board)
+    }
+
+    #[no_mangle]
+    pub extern "C" fn apply_ai_move(&mut self) {
+        let placement = ai::get_column_placement(self.board);
+        self.board.place(placement);
+    }
+    
     
 }
