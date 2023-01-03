@@ -120,7 +120,8 @@ impl Board {
         num_bricks
     }
 
-    fn get_num_bricks(&self) -> i32 {
+    #[no_mangle]
+    pub fn get_num_bricks(&self) -> i32 {
         let count_bricks = self
             .tiles
             .iter()
