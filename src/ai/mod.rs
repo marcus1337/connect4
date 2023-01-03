@@ -83,7 +83,6 @@ pub fn get_column_placement(board: Board) -> i32 {
     }).collect();
 
     for (col, score) in possible_columns.iter().zip(scores.iter()) {
-        println!("{}", score);
         if maximizing_player && score > &best_score {
             best_score = *score;
             chosen_col = *col as i32;
